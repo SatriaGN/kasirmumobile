@@ -8,6 +8,8 @@ import {
   ScrollView,
   TextInput,
   useWindowDimensions,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -64,7 +66,7 @@ export default function ProductDetailModal({ product, onClose, onAdd, canViewCos
 
   return (
     <Modal visible={!!product} transparent animationType="slide">
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView style={[styles.overlay, { paddingLeft: insets.left, paddingRight: insets.right }]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <TouchableOpacity style={styles.overlayDismiss} onPress={onClose} />
         <View style={[styles.sheet, { maxHeight: winHeight * 0.88, paddingBottom: Math.max(Spacing.base, insets.bottom) }]}>
           <View style={styles.sheetHandle} />
@@ -163,7 +165,7 @@ export default function ProductDetailModal({ product, onClose, onAdd, canViewCos
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

@@ -6,10 +6,11 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
-  SafeAreaView,
   Modal,
   ScrollView,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
   type ListRenderItem,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -94,7 +95,7 @@ export default function DebtorScreen({ navigation }: DebtorScreenProps) {
   );
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       <ScreenHeader
         title="Piutang & Aging"
         subtitle={`${summary.memberCount} member berutang`}
@@ -150,7 +151,7 @@ export default function DebtorScreen({ navigation }: DebtorScreenProps) {
       />
 
       <DebtorDetail detail={detail} onClose={() => setDetail(null)} onPay={payDebt} />
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -194,7 +195,7 @@ function DebtorDetail({ detail, onClose, onPay }: DebtorDetailProps) {
 
   return (
     <Modal visible={!!detail} transparent animationType="slide">
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView style={[styles.overlay, { paddingLeft: insets.left, paddingRight: insets.right }]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <TouchableOpacity style={{ flex: 1 }} onPress={onClose} />
         <View style={[styles.detailSheet, { paddingBottom: Math.max(Spacing.base, insets.bottom) }]}>
           <View style={styles.sheetHandle} />
@@ -262,7 +263,7 @@ function DebtorDetail({ detail, onClose, onPay }: DebtorDetailProps) {
             </TouchableOpacity>
           </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

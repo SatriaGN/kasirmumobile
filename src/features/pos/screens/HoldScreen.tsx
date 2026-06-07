@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, StatusBar, Alert, type ListRenderItem } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, StatusBar, Alert, type ListRenderItem } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, Radius, Fonts, Shadow } from '@shared/theme';
@@ -114,9 +114,9 @@ export default function HoldScreen({ navigation }: Props) {
   );
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       <StatusBar barStyle="light-content" backgroundColor="#1DAA8B" />
-      <LinearGradient colors={['#1DAA8B', '#4FD1B5']} style={styles.header}>
+      <LinearGradient colors={['#1DAA8B', '#4FD1B5']} style={[styles.header, { paddingTop: insets.top + Spacing.sm }]}>
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
             <Ionicons name="arrow-back" size={22} color={Colors.white} />
@@ -142,13 +142,13 @@ export default function HoldScreen({ navigation }: Props) {
           </View>
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
-  header: { paddingTop: 50, paddingBottom: Spacing.lg, paddingHorizontal: Spacing.base },
+  header: { paddingBottom: Spacing.lg, paddingHorizontal: Spacing.base },
   headerRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   backBtn: { width: 38, height: 38, borderRadius: 19, backgroundColor: 'rgba(255,255,255,0.18)', justifyContent: 'center', alignItems: 'center' },
   title: { color: Colors.white, fontSize: Fonts.sizes.xl, fontWeight: '800' },

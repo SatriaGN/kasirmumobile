@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Spacing, Fonts } from '@shared/theme';
 
 export interface ScreenHeaderProps {
@@ -20,8 +21,9 @@ export default function ScreenHeader({
   right,
   colors = ['#1DAA8B', '#4FD1B5'],
 }: ScreenHeaderProps) {
+  const insets = useSafeAreaInsets();
   return (
-    <LinearGradient colors={colors} style={styles.header}>
+    <LinearGradient colors={colors} style={[styles.header, { paddingTop: insets.top + Spacing.sm }]}>
       <StatusBar barStyle="light-content" backgroundColor={colors[0]} />
       <View style={styles.row}>
         {onBack && (
@@ -40,7 +42,7 @@ export default function ScreenHeader({
 }
 
 const styles = StyleSheet.create({
-  header: { paddingTop: 50, paddingBottom: Spacing.lg, paddingHorizontal: Spacing.base },
+  header: { paddingBottom: Spacing.lg, paddingHorizontal: Spacing.base },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   backBtn: {
     width: 38,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, type ListRenderItem } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, type ListRenderItem } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, Radius, Fonts, Shadow } from '@shared/theme';
@@ -60,7 +60,7 @@ export default function SyncScreen({ navigation }: SyncScreenProps) {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       <ScreenHeader title="Status Sinkronisasi" subtitle={syncStatus.label} onBack={() => navigation.goBack()} />
 
       <View style={styles.statusCard}>
@@ -107,7 +107,7 @@ export default function SyncScreen({ navigation }: SyncScreenProps) {
           </TouchableOpacity>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 

@@ -6,10 +6,11 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
-  SafeAreaView,
   Modal,
   ScrollView,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
   type ListRenderItem,
   type KeyboardTypeOptions,
 } from 'react-native';
@@ -98,7 +99,7 @@ export default function MembersScreen({ navigation }: MembersScreenProps) {
   );
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       <ScreenHeader title="Kelola Member" subtitle={`${filtered.length} member`} onBack={() => navigation.goBack()} />
       <View style={styles.searchWrap}>
         <View style={styles.searchBox}>
@@ -154,7 +155,7 @@ export default function MembersScreen({ navigation }: MembersScreenProps) {
           setFormVisible(false);
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -167,6 +168,7 @@ interface MemberFormProps {
 }
 
 function MemberForm({ visible, editing, memberTypes, onClose, onSubmit }: MemberFormProps) {
+  const insets = useSafeAreaInsets();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -194,7 +196,7 @@ function MemberForm({ visible, editing, memberTypes, onClose, onSubmit }: Member
 
   return (
     <Modal visible={visible} transparent animationType="slide">
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView style={[styles.overlay, { paddingLeft: insets.left, paddingRight: insets.right }]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <TouchableOpacity style={{ flex: 1 }} onPress={onClose} />
         <View style={styles.formSheet}>
           <View style={styles.sheetHandle} />
@@ -228,7 +230,7 @@ function MemberForm({ visible, editing, memberTypes, onClose, onSubmit }: Member
             </LinearGradient>
           </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  SafeAreaView,
   StatusBar,
   ScrollView,
   Alert,
@@ -48,9 +47,9 @@ export default function OpenShiftScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       <StatusBar barStyle="light-content" backgroundColor="#1DAA8B" />
-      <LinearGradient colors={['#1DAA8B', '#4FD1B5']} style={styles.header}>
+      <LinearGradient colors={['#1DAA8B', '#4FD1B5']} style={[styles.header, { paddingTop: insets.top + Spacing.sm }]}>
         <View style={styles.headerRow}>
           <View style={styles.iconCircle}>
             <Ionicons name="time-outline" size={32} color={Colors.white} />
@@ -132,13 +131,13 @@ export default function OpenShiftScreen() {
           </LinearGradient>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
-  header: { paddingTop: 50, paddingBottom: Spacing.xl, paddingHorizontal: Spacing.base, alignItems: 'flex-start' },
+  header: { paddingBottom: Spacing.xl, paddingHorizontal: Spacing.base, alignItems: 'flex-start' },
   headerRow: { width: '100%', marginBottom: Spacing.md },
   iconCircle: { width: 60, height: 60, borderRadius: 30, backgroundColor: 'rgba(255,255,255,0.18)', justifyContent: 'center', alignItems: 'center' },
   title: { color: Colors.white, fontSize: Fonts.sizes.xxl, fontWeight: '800' },

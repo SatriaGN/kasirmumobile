@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
-  SafeAreaView,
   StatusBar,
   Alert,
   type ListRenderItem,
@@ -68,9 +67,9 @@ export default function SelectOutletScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       <StatusBar barStyle="light-content" backgroundColor="#1DAA8B" />
-      <LinearGradient colors={['#1DAA8B', '#4FD1B5']} style={styles.header}>
+      <LinearGradient colors={['#1DAA8B', '#4FD1B5']} style={[styles.header, { paddingTop: insets.top + Spacing.sm }]}>
         <View style={styles.headerTop}>
           <View style={styles.userPill}>
             <View style={styles.userAvatar}>
@@ -114,13 +113,13 @@ export default function SelectOutletScreen() {
           </LinearGradient>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
-  header: { paddingTop: 50, paddingBottom: Spacing.xl, paddingHorizontal: Spacing.base },
+  header: { paddingBottom: Spacing.xl, paddingHorizontal: Spacing.base },
   headerTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: Spacing.lg },
   userPill: {
     flexDirection: 'row',

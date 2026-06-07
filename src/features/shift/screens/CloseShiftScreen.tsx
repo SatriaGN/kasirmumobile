@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  SafeAreaView,
   StatusBar,
   ScrollView,
   Alert,
@@ -93,7 +92,7 @@ export default function CloseShiftScreen({ navigation }: Props) {
 
   if (!activeShift) {
     return (
-      <SafeAreaView style={styles.safe}>
+      <View style={styles.safe}>
         <View style={styles.empty}>
           <Ionicons name="warning-outline" size={64} color={Colors.warning} />
           <Text style={styles.emptyTitle}>Tidak Ada Shift Aktif</Text>
@@ -101,14 +100,14 @@ export default function CloseShiftScreen({ navigation }: Props) {
             <Text style={styles.backToHomeText}>Kembali</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       <StatusBar barStyle="light-content" backgroundColor="#1DAA8B" />
-      <LinearGradient colors={['#1DAA8B', '#4FD1B5']} style={styles.header}>
+      <LinearGradient colors={['#1DAA8B', '#4FD1B5']} style={[styles.header, { paddingTop: insets.top + Spacing.sm }]}>
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
             <Ionicons name="arrow-back" size={22} color={Colors.white} />
@@ -240,8 +239,9 @@ export default function CloseShiftScreen({ navigation }: Props) {
       </View>
 
       <Modal visible={!!summary} transparent animationType="fade">
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingLeft: insets.left, paddingRight: insets.right }]}>
           <View style={styles.summaryCard}>
+            <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
             <LinearGradient colors={['#2E7D32', '#43A047']} style={styles.summaryTop}>
               <View style={styles.summaryCheck}>
                 <Ionicons name="checkmark" size={36} color={Colors.success} />
@@ -274,10 +274,11 @@ export default function CloseShiftScreen({ navigation }: Props) {
                 <Text style={styles.finishText}>Logout</Text>
               </TouchableOpacity>
             </View>
+            </ScrollView>
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -319,7 +320,7 @@ function SumRow({ label, val, valStyle }: { label: string; val: string; valStyle
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
-  header: { paddingTop: 50, paddingBottom: Spacing.lg, paddingHorizontal: Spacing.base },
+  header: { paddingBottom: Spacing.lg, paddingHorizontal: Spacing.base },
   headerRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   backBtn: { width: 38, height: 38, borderRadius: 19, backgroundColor: 'rgba(255,255,255,0.18)', justifyContent: 'center', alignItems: 'center' },
   title: { color: Colors.white, fontSize: Fonts.sizes.xl, fontWeight: '800' },
@@ -362,7 +363,7 @@ const styles = StyleSheet.create({
   closeBtnDisabled: { opacity: 0.7 },
   closeGrad: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 16 },
   closeText: { color: Colors.white, fontWeight: '800', fontSize: Fonts.sizes.base },
-  overlay: { flex: 1, backgroundColor: 'rgba(0,0,30,0.6)', justifyContent: 'center', paddingHorizontal: Spacing.lg },
+  overlay: { flex: 1, backgroundColor: 'rgba(0,0,30,0.6)', justifyContent: 'center', paddingHorizontal: Spacing.lg, paddingVertical: Spacing.xl },
   summaryCard: { backgroundColor: Colors.white, borderRadius: Radius.xl, overflow: 'hidden', ...Shadow.lg },
   summaryTop: { alignItems: 'center', paddingVertical: Spacing.xl },
   summaryCheck: { width: 68, height: 68, borderRadius: 34, backgroundColor: Colors.white, justifyContent: 'center', alignItems: 'center', marginBottom: Spacing.md },

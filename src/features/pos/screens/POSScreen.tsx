@@ -10,7 +10,8 @@ import {
   ScrollView,
   Alert,
   useWindowDimensions,
-  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -86,6 +87,9 @@ export default function POSScreen({ navigation, route }: Props) {
   const [holdNoteModal, setHoldNoteModal] = useState(false);
   const [holdNote, setHoldNote] = useState('');
   const insets = useSafeAreaInsets();
+  // Modals render outside the AppShell side-inset wrapper, so apply left/right
+  // insets here too — otherwise sheet edges hide under the notch in landscape.
+  const sideInset = { paddingLeft: insets.left, paddingRight: insets.right };
   const { width: winWidth, height: winHeight } = useWindowDimensions();
 
   // Adapt the product grid to the available width so landscape uses more columns.
@@ -189,8 +193,8 @@ export default function POSScreen({ navigation, route }: Props) {
   const quickAmounts: number[] = [totals.total, 50000, 100000, 150000, 200000];
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <LinearGradient colors={['#1DAA8B', '#4FD1B5']} style={styles.header}>
+    <View style={styles.safeArea}>
+      <LinearGradient colors={['#1DAA8B', '#4FD1B5']} style={[styles.header, { paddingTop: insets.top + Spacing.sm }]}>
         <View style={styles.headerTop}>
           <View style={{ flex: 1 }}>
             <Text style={styles.headerTitle}>Kasir</Text>
@@ -295,7 +299,7 @@ export default function POSScreen({ navigation, route }: Props) {
 
       {/* CART SHEET */}
       <Modal visible={cartVisible} transparent animationType="slide">
-        <View style={styles.overlay}>
+        <KeyboardAvoidingView style={[styles.overlay, sideInset]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <TouchableOpacity style={styles.overlayDismiss} onPress={() => setCartVisible(false)} />
           <View style={[styles.sheet, { maxHeight: winHeight * 0.88, paddingBottom: Math.max(Spacing.base, insets.bottom) }]}>
             <View style={styles.sheetHandle} />
@@ -386,12 +390,12 @@ export default function POSScreen({ navigation, route }: Props) {
               </>
             )}
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* PAYMENT MODAL */}
       <Modal visible={payModal} transparent animationType="slide">
-        <View style={styles.overlay}>
+        <KeyboardAvoidingView style={[styles.overlay, sideInset]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={[styles.paySheet, { maxHeight: winHeight * 0.92, paddingBottom: Math.max(Spacing.base, insets.bottom) }]}>
             <View style={styles.sheetHandle} />
             <View style={styles.paySheetHeader}>
@@ -484,12 +488,13 @@ export default function POSScreen({ navigation, route }: Props) {
               </TouchableOpacity>
             </ScrollView>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* RECEIPT */}
       <Modal visible={!!receipt} transparent animationType="fade">
-        <View style={[styles.overlay, { justifyContent: 'center', paddingHorizontal: Spacing.xl }]}>
+        <View style={[styles.overlay, sideInset]}>
+          <ScrollView contentContainerStyle={styles.centeredModalScroll} showsVerticalScrollIndicator={false}>
           <View style={styles.receiptCard}>
             <LinearGradient colors={['#1DAA8B', '#4FD1B5']} style={styles.receiptTop}>
               <View style={styles.receiptCheckCircle}>
@@ -515,40 +520,43 @@ export default function POSScreen({ navigation, route }: Props) {
               </View>
             </View>
           </View>
+          </ScrollView>
         </View>
       </Modal>
 
       {/* SCAN */}
       <Modal visible={scanModal} transparent animationType="fade">
-        <View style={[styles.overlay, { justifyContent: 'center', paddingHorizontal: Spacing.xl }]}>
-          <View style={styles.scanCard}>
-            <View style={styles.scanHeader}>
-              <Text style={styles.scanTitle}>Scan Barcode Produk</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  setScanModal(false);
-                  setScanInput('');
-                }}
-              >
-                <Ionicons name="close" size={24} color={Colors.textPrimary} />
+        <KeyboardAvoidingView style={[styles.overlay, sideInset]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView contentContainerStyle={styles.centeredModalScroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            <View style={styles.scanCard}>
+              <View style={styles.scanHeader}>
+                <Text style={styles.scanTitle}>Scan Barcode Produk</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    setScanModal(false);
+                    setScanInput('');
+                  }}
+                >
+                  <Ionicons name="close" size={24} color={Colors.textPrimary} />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.scanArea}>
+                <Ionicons name="barcode-outline" size={72} color={Colors.primary} />
+                <View style={styles.scanLine} />
+                <Text style={styles.scanHint}>Arahkan kamera atau ketik manual</Text>
+              </View>
+              <TextInput style={styles.scanInput} value={scanInput} onChangeText={setScanInput} placeholder="Mis: 8991234560028" keyboardType="numeric" placeholderTextColor={Colors.textLight} autoFocus />
+              <TouchableOpacity style={styles.scanSubmit} onPress={handleScan}>
+                <Text style={styles.scanSubmitText}>Tambah ke Keranjang</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.scanArea}>
-              <Ionicons name="barcode-outline" size={72} color={Colors.primary} />
-              <View style={styles.scanLine} />
-              <Text style={styles.scanHint}>Arahkan kamera atau ketik manual</Text>
-            </View>
-            <TextInput style={styles.scanInput} value={scanInput} onChangeText={setScanInput} placeholder="Mis: 8991234560028" keyboardType="numeric" placeholderTextColor={Colors.textLight} autoFocus />
-            <TouchableOpacity style={styles.scanSubmit} onPress={handleScan}>
-              <Text style={styles.scanSubmitText}>Tambah ke Keranjang</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* MEMBER PICKER */}
       <Modal visible={memberModal} transparent animationType="slide">
-        <View style={styles.overlay}>
+        <KeyboardAvoidingView style={[styles.overlay, sideInset]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <TouchableOpacity
             style={styles.overlayDismiss}
             onPress={() => {
@@ -624,12 +632,12 @@ export default function POSScreen({ navigation, route }: Props) {
               )}
             </ScrollView>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* HOLD NOTE */}
       <Modal visible={holdNoteModal} transparent animationType="fade">
-        <View style={[styles.overlay, { justifyContent: 'center', paddingHorizontal: Spacing.xl }]}>
+        <KeyboardAvoidingView style={[styles.overlay, { justifyContent: 'center', paddingLeft: Spacing.xl + insets.left, paddingRight: Spacing.xl + insets.right }]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <View style={styles.scanCard}>
             <View style={styles.scanHeader}>
               <Text style={styles.scanTitle}>Simpan Transaksi</Text>
@@ -648,9 +656,9 @@ export default function POSScreen({ navigation, route }: Props) {
               <Text style={styles.scanSubmitText}>Simpan ke Hold</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -760,7 +768,7 @@ function ReceiptRow({ label, val, valColor }: { label: string; val?: string; val
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: Colors.background },
-  header: { paddingTop: 44, paddingBottom: 14, paddingHorizontal: Spacing.base },
+  header: { paddingBottom: 14, paddingHorizontal: Spacing.base },
   headerTop: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: Spacing.sm },
   headerTitle: { color: Colors.white, fontSize: Fonts.sizes.xl, fontWeight: '800' },
   headerSubRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
@@ -797,6 +805,7 @@ const styles = StyleSheet.create({
   cartBarTotal: { color: Colors.white, fontSize: Fonts.sizes.base, fontWeight: '800', marginRight: 4 },
   overlay: { flex: 1, backgroundColor: 'rgba(0,0,30,0.55)', justifyContent: 'flex-end' },
   overlayDismiss: { flex: 1 },
+  centeredModalScroll: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: Spacing.xl, paddingVertical: Spacing.xl },
   sheet: { backgroundColor: Colors.white, borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingBottom: 24 },
   sheetHandle: { width: 40, height: 4, backgroundColor: Colors.border, borderRadius: 2, alignSelf: 'center', marginTop: 10, marginBottom: 4 },
   sheetHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: Spacing.base, paddingVertical: Spacing.md, borderBottomWidth: 1, borderBottomColor: Colors.borderLight },

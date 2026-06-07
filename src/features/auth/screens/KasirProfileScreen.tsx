@@ -5,11 +5,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
   StatusBar,
   Modal,
   TextInput,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -81,9 +82,9 @@ export default function KasirProfileScreen({ navigation }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       <StatusBar barStyle="light-content" backgroundColor="#1DAA8B" />
-      <LinearGradient colors={['#1DAA8B', '#4FD1B5']} style={styles.header}>
+      <LinearGradient colors={['#1DAA8B', '#4FD1B5']} style={[styles.header, { paddingTop: insets.top + Spacing.sm }]}>
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
             <Ionicons name="arrow-back" size={22} color={Colors.white} />
@@ -189,24 +190,26 @@ export default function KasirProfileScreen({ navigation }: Props) {
       </ScrollView>
 
       <Modal visible={pwdModal} transparent animationType="fade">
-        <View style={styles.overlay}>
-          <View style={styles.pwdCard}>
-            <View style={styles.pwdHeader}>
-              <Text style={styles.pwdTitle}>Ganti Password</Text>
-              <TouchableOpacity onPress={() => setPwdModal(false)}>
-                <Ionicons name="close" size={24} color={Colors.textPrimary} />
+        <KeyboardAvoidingView style={[styles.overlay, { paddingLeft: insets.left, paddingRight: insets.right }]} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView contentContainerStyle={styles.modalScroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            <View style={styles.pwdCard}>
+              <View style={styles.pwdHeader}>
+                <Text style={styles.pwdTitle}>Ganti Password</Text>
+                <TouchableOpacity onPress={() => setPwdModal(false)}>
+                  <Ionicons name="close" size={24} color={Colors.textPrimary} />
+                </TouchableOpacity>
+              </View>
+              <PwdInput label="Password Lama" value={oldPwd} onChange={setOldPwd} />
+              <PwdInput label="Password Baru" value={newPwd} onChange={setNewPwd} />
+              <PwdInput label="Konfirmasi Password Baru" value={confirmPwd} onChange={setConfirmPwd} />
+              <TouchableOpacity style={styles.pwdSubmit} onPress={handleChangePwd}>
+                <Text style={styles.pwdSubmitText}>Simpan Password Baru</Text>
               </TouchableOpacity>
             </View>
-            <PwdInput label="Password Lama" value={oldPwd} onChange={setOldPwd} />
-            <PwdInput label="Password Baru" value={newPwd} onChange={setNewPwd} />
-            <PwdInput label="Konfirmasi Password Baru" value={confirmPwd} onChange={setConfirmPwd} />
-            <TouchableOpacity style={styles.pwdSubmit} onPress={handleChangePwd}>
-              <Text style={styles.pwdSubmitText}>Simpan Password Baru</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -234,7 +237,7 @@ function PwdInput({ label, value, onChange }: { label: string; value: string; on
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
-  header: { paddingTop: 50, paddingBottom: Spacing.xl, paddingHorizontal: Spacing.base },
+  header: { paddingBottom: Spacing.xl, paddingHorizontal: Spacing.base },
   headerRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, marginBottom: Spacing.lg },
   backBtn: { width: 38, height: 38, borderRadius: 19, backgroundColor: 'rgba(255,255,255,0.18)', justifyContent: 'center', alignItems: 'center' },
   title: { color: Colors.white, fontSize: Fonts.sizes.xl, fontWeight: '800' },
@@ -265,7 +268,8 @@ const styles = StyleSheet.create({
   menuRight: { fontSize: Fonts.sizes.xs, color: Colors.textSecondary, marginRight: 4 },
   logoutBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: Spacing.md, marginTop: Spacing.lg, borderRadius: Radius.md, borderWidth: 1.5, borderColor: Colors.error, backgroundColor: Colors.errorLight },
   logoutText: { color: Colors.error, fontWeight: '800', fontSize: Fonts.sizes.sm },
-  overlay: { flex: 1, backgroundColor: 'rgba(0,0,30,0.6)', justifyContent: 'center', paddingHorizontal: Spacing.lg },
+  overlay: { flex: 1, backgroundColor: 'rgba(0,0,30,0.6)' },
+  modalScroll: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: Spacing.lg, paddingVertical: Spacing.xl },
   pwdCard: { backgroundColor: Colors.white, borderRadius: Radius.xl, padding: Spacing.lg },
   pwdHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: Spacing.md },
   pwdTitle: { fontSize: Fonts.sizes.lg, fontWeight: '800', color: Colors.textPrimary },

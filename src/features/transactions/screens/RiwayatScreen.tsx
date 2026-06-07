@@ -6,7 +6,6 @@ import {
   FlatList,
   TouchableOpacity,
   Modal,
-  SafeAreaView,
   ScrollView,
   TextInput,
   Alert,
@@ -103,7 +102,7 @@ export default function RiwayatScreen({ navigation }: RiwayatScreenProps) {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       <ScreenHeader
         title="Riwayat Transaksi"
         subtitle={`Shift ${activeShift?.id?.slice(-6) || '-'} · ${stats.count} selesai · ${formatCurrency(stats.total)}`}
@@ -134,7 +133,7 @@ export default function RiwayatScreen({ navigation }: RiwayatScreenProps) {
       />
 
       <Modal visible={!!detail} transparent animationType="slide">
-        <View style={styles.overlay}>
+        <View style={[styles.overlay, { paddingLeft: insets.left, paddingRight: insets.right }]}>
           <TouchableOpacity style={styles.overlayDismiss} onPress={() => setDetail(null)} />
           <View style={[styles.detailSheet, { paddingBottom: Math.max(Spacing.base, insets.bottom) }]}>
             <View style={styles.sheetHandle} />
@@ -200,7 +199,7 @@ export default function RiwayatScreen({ navigation }: RiwayatScreenProps) {
       </Modal>
 
       <Modal visible={voidModal} transparent animationType="fade">
-        <View style={[styles.overlay, { justifyContent: 'center', paddingHorizontal: Spacing.xl }]}>
+        <View style={[styles.overlay, { justifyContent: 'center', paddingLeft: Spacing.xl + insets.left, paddingRight: Spacing.xl + insets.right }]}>
           <View style={styles.voidCard}>
             <Text style={styles.voidTitle}>{hasPermission('canVoid') ? 'Void Transaksi' : 'Ajukan Void'}</Text>
             <Text style={styles.voidSub}>{hasPermission('canVoid') ? 'Stok akan dikembalikan.' : 'Permintaan dikirim ke Owner untuk disetujui.'}</Text>
@@ -222,7 +221,7 @@ export default function RiwayatScreen({ navigation }: RiwayatScreenProps) {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
